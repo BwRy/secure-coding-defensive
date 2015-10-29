@@ -1,9 +1,11 @@
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -38,7 +40,7 @@ public class Main {
         File input = new File(data.getInputFilePath());
         
         try {
-            System.out.print(FileUtils.readFileToString(input));
+            System.out.println(FileUtils.readFileToString(input));
         } catch (IOException e) {
             errorStream.println("Couldn't read input file");
             System.exit(-1);
@@ -145,14 +147,27 @@ public class Main {
             }
 
             System.out.println("Enter the first number");
-            x = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                x = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                errorStream.println("Invalid number");
+                continue;
+            } finally {
+                scanner.nextLine();
+            }
 
             System.out.println("Enter the second number");
-            y = scanner.nextInt();
-            scanner.nextLine();
-        } while (willAddOverflow(x, y));
+            try {
+                y = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                errorStream.println("Invalid number");
+                continue;
+            } finally {
+                scanner.nextLine();
+            }
+        } while (x == null || y == null || willAddOverflow(x, y));
 
+        File input;
         // Prompt for input/output paths
         do {
             if (inputFilePath != null) {
@@ -160,23 +175,17 @@ public class Main {
             }
 
             System.out.println("Enter the path for the input file (must be relative to application directory)");
-            inputFilePath = scanner.nextLine();
-            try {
-                inputFilePath = new URI(inputFilePath).normalize().getPath();
-            } catch (URISyntaxException e) {
-                errorStream.println("Invalid URI");
+            input = new File(FilenameUtils.normalize(scanner.nextLine()));
+            inputFilePath = input.getAbsolutePath();
+
+            if (!input.exists()) {
+                errorStream.println("Input file does not exist");
                 continue;
             }
 
             System.out.println("Enter the path for the output file (must be relative to application directory)");
-            outputFilePath = scanner.nextLine();
-            try {
-                outputFilePath = new URI(inputFilePath).normalize().getPath();
-            } catch (URISyntaxException e) {
-                errorStream.println("Invalid URI");
-                continue;
-            }
-        } while (!isValidPath(inputFilePath) && !isValidPath(outputFilePath));
+            outputFilePath = new File(FilenameUtils.normalize(scanner.nextLine())).getAbsolutePath();
+        } while (!input.exists() || (!isValidPath(inputFilePath) && !isValidPath(outputFilePath)));
 
         // Prompt for passwords
         while (true) {
