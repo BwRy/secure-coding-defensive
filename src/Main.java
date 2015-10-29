@@ -159,7 +159,7 @@ public class Main {
                 errorStream.println("Input or output file provided is not valid");
             }
 
-            System.out.println("Enter the path for the input file");
+            System.out.println("Enter the path for the input file (must be relative to application directory)");
             inputFilePath = scanner.nextLine();
             try {
                 inputFilePath = new URI(inputFilePath).normalize().getPath();
@@ -168,7 +168,7 @@ public class Main {
                 continue;
             }
 
-            System.out.println("Enter the path for the output file");
+            System.out.println("Enter the path for the output file (must be relative to application directory)");
             outputFilePath = scanner.nextLine();
             try {
                 outputFilePath = new URI(inputFilePath).normalize().getPath();
