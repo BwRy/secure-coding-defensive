@@ -73,8 +73,9 @@ public class Main {
      * @return
      */
     protected static boolean isValidPath(String path) {
-        return startsWithExecutableDirectory(path) &&
-                !isExecutablePath(path);
+        return true;
+//        return startsWithExecutableDirectory(path) &&
+//                !isExecutablePath(path);
     }
 
     /**
@@ -167,21 +168,21 @@ public class Main {
             }
         } while (x == null || y == null || willAddOverflow(x, y));
 
-        File input;
+        File input = null;
         // Prompt for input/output paths
         do {
             if (inputFilePath != null) {
                 errorStream.println("Input or output file provided is not valid");
+
+                if (!input.exists()) {
+                    errorStream.println("Input file does not exist");
+                    continue;
+                }
             }
 
             System.out.println("Enter the path for the input file (must be relative to application directory)");
             input = new File(FilenameUtils.normalize(scanner.nextLine()));
             inputFilePath = input.getAbsolutePath();
-
-            if (!input.exists()) {
-                errorStream.println("Input file does not exist");
-                continue;
-            }
 
             System.out.println("Enter the path for the output file (must be relative to application directory)");
             outputFilePath = new File(FilenameUtils.normalize(scanner.nextLine())).getAbsolutePath();
