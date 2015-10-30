@@ -1,10 +1,11 @@
+package com.securecoding.vulgarbandidtos;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.math.BigInteger;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -28,23 +29,25 @@ public class Main {
             System.exit(-1);
         }
 
-        outputFile.println(data.getFirstName());
+        BigInteger x = BigInteger.valueOf(data.getX()), y = BigInteger.valueOf(data.getY());
+        outputFile.printf("%s %s\n", data.getFirstName(), data.getLastName());
+        outputFile.println(x.add(y));
+        outputFile.println(x.multiply(y));
         outputFile.println(data.getLastName());
         outputFile.println(hash);
+        // Read the input file
+        File input = new File(data.getInputFilePath());
+
+        try {
+            outputFile.print(FileUtils.readFileToString(input));
+        } catch (IOException e) {
+            errorStream.println("Couldn't read input file");
+        }
 
         outputFile.close();
 
-        System.out.println("Contents written to output file");
 
-        // Read the input file
-        File input = new File(data.getInputFilePath());
-        
-        try {
-            System.out.println(FileUtils.readFileToString(input));
-        } catch (IOException e) {
-            errorStream.println("Couldn't read input file");
-            System.exit(-1);
-        }
+        System.out.println("Contents written to output file");
     }
 
 
@@ -73,9 +76,8 @@ public class Main {
      * @return
      */
     protected static boolean isValidPath(String path) {
-        return true;
-//        return startsWithExecutableDirectory(path) &&
-//                !isExecutablePath(path);
+        return startsWithExecutableDirectory(path) &&
+                !isExecutablePath(path);
     }
 
     /**

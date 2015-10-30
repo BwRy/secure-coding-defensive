@@ -1,3 +1,5 @@
+package com.securecoding.vulgarbandidtos;
+
 /**
  * Created by Lander Brandt on 10/28/15.
  * Basically one big struct
